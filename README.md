@@ -196,7 +196,7 @@ image:
   pullPolicy: Always
 
 kafka:
-  brokerConnect: strimzi-kafka-cluster-kafka-bootstrap:9092 # Updated to use the bootstrap service
+  brokerConnect: strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 # Updated to use the bootstrap service
   properties: ""
   truststore: ""
   keystore: ""
@@ -267,5 +267,5 @@ mountProtoDesc:
 ```bash
 git clone https://github.com/obsidiandynamics/kafdrop.git
 cd kafdrop/chart
-helm -n strimzi upgrade --install kafdrop --create-namespace -f values.yaml ./
+helm -n strimzi upgrade --install kafdrop --create-namespace -f values.yaml ./ --wait
 ```
