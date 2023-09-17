@@ -185,3 +185,87 @@ helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server metric
 ```
 
 - Terraform eks cluster https://github.com/quickbooks2018/aws-eks-blueprints.git
+
+- kafdop vales.yaml
+```bash
+replicaCount: 1
+
+image:
+  repository: obsidiandynamics/kafdrop
+  tag: latest
+  pullPolicy: Always
+
+kafka:
+  brokerConnect: strimzi-kafka-cluster-kafka-bootstrap:9092 # Updated to use the bootstrap service
+  properties: ""
+  truststore: ""
+  keystore: ""
+  propertiesFile: "kafka.properties"
+  truststoreFile: "kafka.truststore.jks"
+  keystoreFile: "kafka.keystore.jks"
+
+host:
+
+jvm:
+  opts: ""
+jmx:
+  port: 8686
+
+nameOverride: ""
+fullnameOverride: ""
+
+cmdArgs: ""
+
+global:
+  kubeVersion: ~
+
+server:
+  port: 9000
+  servlet:
+    contextPath: /
+
+service:
+  annotations: {}
+  type: NodePort
+  port: 9000
+  nodePort: 30900
+
+ingress:
+  enabled: false
+  annotations: {}
+  apiVersion: ~
+  #ingressClassName: ~
+  path: /
+  #pathType: ~
+  hosts: []
+  tls: []
+
+resources:
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  requests:
+    cpu: 1m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+podAnnotations: {}
+
+hostAliases: []
+
+mountProtoDesc: 
+  enabled: false
+  hostPath:
+```
+
+- Strimzi Kafka Cluster Monitoring
+```bash
+git clone https://github.com/obsidiandynamics/kafdrop.git
+cd kafdrop/chart
+helm -n strimzi upgrade --install kafdrop --create-namespace -f values.yaml ./
+```
