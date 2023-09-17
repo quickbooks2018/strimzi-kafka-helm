@@ -20,8 +20,8 @@ helm show values strimzi/strimzi-kafka-operator --version 0.37.0 > strimzi-kafka
 ```bash
 helm -n strimzi upgrade --install strimzi-kafka-operator --create-namespace strimzi/strimzi-kafka-operator --version 0.37.0
 ```
-- Strimzi Kafka Offical
-```bash
+### Strimzi Kafka Offical
+
 - https://strimzi.io/docs/operators/0.30.0/quickstart
 - https://www.youtube.com/watch?v=wUpO_pfdARw
 
