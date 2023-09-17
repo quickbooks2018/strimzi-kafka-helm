@@ -162,7 +162,7 @@ spec:
       transaction.state.log.replication.factor: 1
       transaction.state.log.min.isr: 3
       default.replication.factor: 3
-      min.insync.replicas: 3
+      min.insync.replicas: 2
   zookeeper:
     replicas: 3
     storage:
