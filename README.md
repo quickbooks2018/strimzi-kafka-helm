@@ -21,7 +21,8 @@ helm show values strimzi/strimzi-kafka-operator --version 0.37.0 > strimzi-kafka
 helm -n strimzi upgrade --install strimzi-kafka-operator --create-namespace strimzi/strimzi-kafka-operator --version 0.37.0
 ```
 - https://strimzi.io/docs/operators/0.30.0/quickstart
-
+- https://www.youtube.com/watch?v=wUpO_pfdARw
+- 
 - Strimzi Kafka Cluster
 ```bash
 cat << EOF | kubectl create -n strimzi -f -
@@ -56,21 +57,70 @@ spec:
         size: 100Gi
         deleteClaim: false
     config:
-      offsets.topic.replication.factor: 1
-      transaction.state.log.replication.factor: 1
-      transaction.state.log.min.isr: 1
-      default.replication.factor: 1
-      min.insync.replicas: 1
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 2
+      transaction.state.log.min.isr: 3
+      default.replication.factor: 3
+      min.insync.replicas: 2
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
-      size: 100Gi
+      size: 20Gi
       deleteClaim: false
   entityOperator:
     topicOperator: {}
     userOperator: {}
 EOF
+```
+
+- strimzi-kafka-cluster.yaml
+```bash
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: strimzi-kafka-cluster
+  namespace: strimzi
+spec:
+  kafka:
+    replicas: 3
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+        authentication:
+          type: tls
+      - name: external
+        port: 9094
+        type: nodeport
+        tls: false
+    storage:
+      type: jbod
+      volumes:
+      - id: 0
+        type: persistent-claim
+        size: 100Gi
+        deleteClaim: false
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 2
+      transaction.state.log.min.isr: 3
+      default.replication.factor: 3
+      min.insync.replicas: 2
+  zookeeper:
+    replicas: 3
+    storage:
+      type: persistent-claim
+      size: 20Gi
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
 ```
 
 - Delete Strimzi Kafka Cluster
@@ -106,17 +156,18 @@ spec:
         type: persistent-claim
         size: 100Gi
         deleteClaim: false
+    version: 3.5.1    
     config:
-      offsets.topic.replication.factor: 1
+      offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 1
-      transaction.state.log.min.isr: 1
-      default.replication.factor: 1
-      min.insync.replicas: 1
+      transaction.state.log.min.isr: 3
+      default.replication.factor: 3
+      min.insync.replicas: 3
   zookeeper:
     replicas: 3
     storage:
       type: persistent-claim
-      size: 100Gi
+      size: 20Gi
       deleteClaim: false
   entityOperator:
     topicOperator: {}
