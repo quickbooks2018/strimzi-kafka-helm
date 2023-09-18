@@ -1,5 +1,7 @@
 # Strimzi Kafka Helm Chart
 
+- kind cluster setup https://github.com/quickbooks2018/kind-nginx-ingress.git
+
 - Strimzi Helm Chart for deploying a Kafka cluster on Kubernetes
 
 ```bash
