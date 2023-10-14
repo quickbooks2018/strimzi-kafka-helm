@@ -271,3 +271,24 @@ git clone https://github.com/obsidiandynamics/kafdrop.git
 cd kafdrop/chart
 helm -n strimzi upgrade --install kafdrop --create-namespace -f values.yaml ./ --wait
 ```
+
+- kafka topic creation
+```bash
+kubectl get pods -n strimzi
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --create --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --replication-factor 3 --partitions 3
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --list --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
+- kafka start producer
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-producer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+- kafka start consumer from begining
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --from-beginning
+```
+
+- kafka start consumer
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
