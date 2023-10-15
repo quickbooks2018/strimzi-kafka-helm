@@ -379,3 +379,7 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-consumer-
 - What is consumer offset?
 - Consumer offset is the offset of the next message that the consumer will read. It is a property of the consumer, not the topic or the partition. The consumer can choose to read messages from any offset it wants. The consumer can also choose to read messages from a specific offset.
 - The consumer offset is stored in a special topic called __consumer_offsets. This topic is internal to Kafka and is managed by the Kafka broker. The consumer offset is stored in the __consumer_offsets topic so that the consumer can resume reading messages from where it left off in case of a failure.
+
+- What is segment?
+  - A segment is a collection of messages in a partition. The messages in a segment are stored in a file on disk. The segment is the unit of storage in Kafka. The segment size is configurable. The default segment size is 1 GB. The segment size is configurable.
+  
