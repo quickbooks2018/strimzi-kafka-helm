@@ -292,3 +292,51 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-c
 ```bash
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
 ```
+
+- If you want to achieve the ordering of messages in a partition, you can set the partition key to the same value for all messages. This will ensure that all messages are sent to the same partition.
+
+- Example of a producer with a key
+
+- topic creation
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --create --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --replication-factor 3 --partitions 3
+```
+- producer with key
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-producer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "parse.key=true" --property "key.separator=-"
+```
+
+- consumer with key
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "print.key=true" --property "key.separator=-"
+```
+
+- consumer with key from begining
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "print.key=true" --property "key.separator=-" --from-beginning
+```
+
+- key
+```bash
+hello-apple
+hello-banana
+hello-orange
+bye-grapes
+bye-mango
+bye-pineapple
+```
+
+- delete topic
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --delete --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
+- delete a group
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-consumer-groups.sh --delete --group my-group --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
+- Note: if there is no key specified, the producer will assign a random key to the message. This will result in the messages being distributed across the partitions in a round-robin fashion.
+
+- With key specified, the producer will use the key to determine the partition to which the message will be sent. If the key is null, the message will be sent to a random partition.
+
