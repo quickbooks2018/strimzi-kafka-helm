@@ -293,6 +293,16 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-c
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
 ```
 
+- kafka describe topic
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --describe --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
+- kafka start consumer with group
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic my-topic --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --group console-consumer-60555
+```
+
 - If you want to achieve the ordering of messages in a partition, you can set the partition key to the same value for all messages. This will ensure that all messages are sent to the same partition.
 
 - Example of a producer with a key
@@ -306,6 +316,11 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-producer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "parse.key=true" --property "key.separator=-"
 ```
 
+- description of topic
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --describe --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
 - consumer with key
 ```bash
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "print.key=true" --property "key.separator=-"
@@ -314,6 +329,11 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-c
 - consumer with key from begining
 ```bash
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "print.key=true" --property "key.separator=-" --from-beginning
+```
+
+- consumer with consumer group
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-console-consumer.sh --topic fruits --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092 --property "print.key=true" --property "key.separator=-" --group my-fruits-group
 ```
 
 - key
@@ -336,7 +356,26 @@ kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh
 kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-consumer-groups.sh --delete --group my-group --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
 ```
 
+- list a topic
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-topics.sh --list --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
+- list a consumer group
+```bash
+kubectl -n strimzi exec -it strimzi-kafka-cluster-kafka-0 -- bin/kafka-consumer-groups.sh --list --bootstrap-server strimzi-kafka-cluster-kafka-bootstrap.strimzi.svc.cluster.local:9092
+```
+
 - Note: if there is no key specified, the producer will assign a random key to the message. This will result in the messages being distributed across the partitions in a round-robin fashion.
 
 - With key specified, the producer will use the key to determine the partition to which the message will be sent. If the key is null, the message will be sent to a random partition.
 
+- what is offset?
+- Offset is a unique identifier of a record within a partition. It denotes the position of the consumer in the partition. The offset is maintained by the Kafka broker in a special topic called __consumer_offsets. The consumer can choose to read messages from any offset it wants. The consumer can also choose to read messages from a specific offset.
+
+- What is consumer group?
+- A consumer group is a group of consumers that work together to consume a topic. Each consumer in the group is assigned a subset of the partitions in the topic. Each consumer in the group reads messages from a unique subset of partitions. This allows the group to consume messages in parallel. The group can consume messages faster than a single consumer. The group can also consume more messages than there are partitions in the topic.
+
+- What is consumer offset?
+- Consumer offset is the offset of the next message that the consumer will read. It is a property of the consumer, not the topic or the partition. The consumer can choose to read messages from any offset it wants. The consumer can also choose to read messages from a specific offset.
+- The consumer offset is stored in a special topic called __consumer_offsets. This topic is internal to Kafka and is managed by the Kafka broker. The consumer offset is stored in the __consumer_offsets topic so that the consumer can resume reading messages from where it left off in case of a failure.
